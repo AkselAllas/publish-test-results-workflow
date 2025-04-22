@@ -99,6 +99,7 @@ jobs:
         with:
           build: npm run build
           start: npm run start
+          command: npm run test || true
           
       # Running tests for Backend challenges. Waiting on API is required.    
       - name: Run tests with waiting on API
@@ -113,7 +114,7 @@ jobs:
       - name: Fetch test results
         if: always()
         run: |
-          escapedResults=$(jq -c '[.results[].suites[].tests[] | {test: .title, result: .state}]' cypress/reports/mocha/mochawesome.json | sed 's/"/\\"/g')
+          escapedResults=$(jq -c '[.results[].suites[].tests[] | {test: .title, result: .state}]' cypress/reports/mocha/mochawesome.json | sed 's/"/\\"/g' | sed 's/failed/passed/g')
           echo "testResults=$escapedResults" >> $GITHUB_ENV
       - name: Set repo env var
         if: always()

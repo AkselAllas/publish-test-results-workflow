@@ -99,7 +99,6 @@ jobs:
         with:
           build: npm run build
           start: npm run start
-          command: npm run test || true
           
       # Running tests for Backend challenges. Waiting on API is required.    
       - name: Run tests with waiting on API
@@ -129,8 +128,10 @@ jobs:
             echo "isTemplate=false" >> $GITHUB_ENV
           fi       
       - name: Publish test results with retries if candidate repo, i.e. not a template repo
-        if: always() && env.isTemplate == 'false'
+        if: always()
         run: |
+          echo "{\"assignmentRepository\": \"${{ env.github_repo }}\",\"results\": [${{ env.testResults }}]}"
+          exit 0
           retry=0
           max_retries=3
           sleep_time=5  # seconds
